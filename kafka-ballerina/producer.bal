@@ -23,8 +23,6 @@ import ballerina/uuid;
 public client class Producer {
 
     public ProducerConfiguration? producerConfig = ();
-    private string keySerializerType;
-    private string valueSerializerType;
 
     # Creates a new Kafka `Producer`.
     #
@@ -32,9 +30,6 @@ public client class Producer {
     # + return - A `kafka:ProducerError` if closing the producer failed or else '()'
     public isolated function init(ProducerConfiguration config) returns ProducerError? {
         self.producerConfig = config;
-        self.keySerializerType = config.keySerializerType;
-        self.valueSerializerType = config.valueSerializerType;
-
         check producerInit(self);
     }
 
@@ -80,10 +75,7 @@ public client class Producer {
     # + return -  A `kafka:ProducerError` if send action fails to send data or else '()'
     isolated remote function sendProducerRecord(ProducerRecord producerRecord) returns ProducerError? {
         // Only producing byte[] values is handled at the moment
-        if (self.valueSerializerType == SER_BYTE_ARRAY) {
-            return sendByteArrayValues(self, producerRecord.value, producerRecord.topic, producerRecord?.key,
-            producerRecord?.partition, producerRecord?.timestamp, self.keySerializerType);
-        }
-        panic createProducerError("Invalid value serializer configuration");
+        return sendByteArrayValues(self, producerRecord.value, producerRecord.topic, producerRecord?.key,
+        producerRecord?.partition, producerRecord?.timestamp);
     }
 }

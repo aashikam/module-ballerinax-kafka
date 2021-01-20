@@ -21,8 +21,6 @@
 public client class Listener {
 
     public ConsumerConfiguration consumerConfig;
-    private string keyDeserializerType;
-    private string valueDeserializerType;
 
     # Creates a new Kafka `Listener`.
     #
@@ -30,8 +28,6 @@ public client class Listener {
     # + return - A `kafka:ConsumerError` if an error is encountered or else '()'
     public isolated function init (ConsumerConfiguration config) returns ConsumerError? {
         self.consumerConfig = config;
-        self.keyDeserializerType = config.keyDeserializerType;
-        self.valueDeserializerType = config.valueDeserializerType;
         check connect(self);
 
         string[]? topics = config?.topics;
